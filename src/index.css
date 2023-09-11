@@ -1,0 +1,30 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.page_buttons {
+  @apply bg-black text-green-500 font-bold px-2 rounded-full
+}
+
+.prev_button {
+  @apply bg-white text-black font-bold px-2 rounded-full
+}
+
+.next_button {
+  @apply bg-white text-black font-bold px-2 rounded-full
+}
+
+
+.active_button {
+  @apply bg-black text-green-500 font-bold px-2 rounded-full
+}
+
+
+
+.disabled_button {
+  @apply bg-white text-gray-400 font-bold px-2 rounded-full
+} 
+

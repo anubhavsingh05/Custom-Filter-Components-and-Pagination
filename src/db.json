@@ -1,0 +1,30 @@
+{
+    "products": [
+      { "id": 1,  "name": "product 1",  "category": "phone",     "price":20 },
+      { "id": 2,  "name": "product 2",  "category": "phone",     "price": 25 },
+      { "id": 3,  "name": "product 3",  "category": "phone",     "price": 30 },
+      { "id": 4,  "name": "product 4",  "category": "phone",     "price": 22 },
+      { "id": 5,  "name": "product 5",  "category": "phone",     "price": 28 },
+      { "id": 6,  "name": "product 6",  "category": "laptop",    "price": 600 },
+      { "id": 7,  "name": "product 7",  "category": "laptop",    "price": 700 },
+      { "id": 8,  "name": "product 8",  "category": "laptop",    "price": 750 },
+      { "id": 9,  "name": "product 9",  "category": "laptop",    "price": 650 },
+      { "id": 10, "name": "product 10", "category": "laptop",    "price": 720 },
+      { "id": 11, "name": "product 11", "category": "clothes",   "price": 40 },
+      { "id": 12, "name": "product 12", "category": "clothes",   "price": 35 },
+      { "id": 13, "name": "product 13", "category": "clothes",   "price": 45 },
+      { "id": 14, "name": "product 14", "category": "clothes",   "price": 38 },
+      { "id": 15, "name": "product 15", "category": "clothes",   "price": 42 },
+      { "id": 16, "name": "product 16", "category": "furniture", "price": 200 },
+      { "id": 17, "name": "product 17", "category": "furniture", "price": 220 },
+      { "id": 18, "name": "product 18", "category": "furniture", "price": 250 },
+      { "id": 19, "name": "product 19", "category": "furniture", "price": 210 },
+      { "id": 20, "name": "product 20", "category": "furniture", "price": 230 },
+      { "id": 21, "name": "product 21", "category": "watches",   "price": 55 },
+      { "id": 22, "name": "product 22", "category": "watches",   "price": 60 },
+      { "id": 23, "name": "product 23", "category": "watches",   "price": 58 },
+      { "id": 24, "name": "product 24", "category": "watches",   "price": 62 },
+      { "id": 25, "name": "product 25", "category": "watches",   "price": 57 }
+    ]
+  }
+  
