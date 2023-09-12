@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import useSideEffect from "./useSideEffect"
 
-// ----   ------    -----
-// ------------  -----
-// _----------------- ---
 
 type PaginationProps = {
-    // firstButtons: number;
-    // lastButtons: number;
     totalPages: number;
     onPageChange: (pageNum: number) => void;
     size : "xs" | "sm" | "md" | "lg";

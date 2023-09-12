@@ -12,7 +12,6 @@ export type searchType = {
 
 
 
-
 export const syncFetchProducts = (searchObject:searchType) => {
 
     const { category, price, pageNo, pageLength } = searchObject 
@@ -20,7 +19,7 @@ export const syncFetchProducts = (searchObject:searchType) => {
     let searchQuery = category ? `category=${category}` : ``
     searchQuery = `${searchQuery}&price_gte=${price[0]}&price_lte=${price[1]}`
     searchQuery = `${searchQuery}&_page=${pageNo}&_limit=${pageLength}`
-             
+    
     const fetcherFunc = () => (
         axios.get(`${serverUrl}/products?${searchQuery}`)
     )
@@ -29,5 +28,6 @@ export const syncFetchProducts = (searchObject:searchType) => {
         select (data) { return data.data },
         cacheTime:0,
         refetchOnWindowFocus:false,
+        keepPreviousData:true
     })
 }
