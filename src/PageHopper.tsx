@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import useSideEffect from "./useSideEffect"
 
-// ----   ------    -----
-// ------------  -----
-// _----------------- ---
+// What if Total Pages are 0 ??
+
+
 
 type PaginationProps = {
     // firstButtons: number;

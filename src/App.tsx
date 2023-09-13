@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { searchType, syncFetchProducts } from "./queryHook"
 import PageHopper from "./PageHopper"
+import PageHopper_Lite from "./PageHopper-Lite"
 
 
 
@@ -29,7 +30,6 @@ function App() {
   }
 
   function handlePage(page:number) {
-      // console.log({tip:"inside app.tsx/handlepage func",page})
       setSearchObject({...searchObject, pageNo:page})
       console.log(page)
   }
@@ -38,10 +38,10 @@ function App() {
   useEffect(()=>{
     if (data && data[0]) {
       const PageCount = Math.ceil(data[0].total/searchObject.pageLength)
-      // console.log(PageCount)
       setTotalPages(PageCount)
     }
   },[data])
+
   
   return (
       <div className={`w-screen h-screen bg-black flex justify-center items-center gap-x-4`}>
@@ -80,23 +80,29 @@ function App() {
              sdf
           </div>
 
-        // what if page is 0, first or last !!, like if single page
-          <div className={`bg-slate-950 mt-4 mx-4 mb-4 py-3 rounded-lg flex justify-center `}>
-             <PageHopper
-                // firstButtons={totalPages ? Math.min(Math.ceil(totalPages/2),3) : 3}
-                // lastButtons={totalPages ? Math.min(Math.floor(totalPages/2),3) : 2}
-                // firstButtons={totalPages ? (totalPages/2 <= 3 ? Math.ceil(totalPages/2) : 3 ): 3}
-                // lastButtons={totalPages ? (totalPages/2 <= 3 ? Math.floor(totalPages/2) : 3 ): 2}
+          <div className={`bg-slate-950 mt-4 mx-4 mb-4 py-3 rounded-lg flex justify-center`}>
+             {/* <PageHopper_Lite
                 totalPages={totalPages ? totalPages : 5 }
                 onPageChange={handlePage || 5}
-                size="lg"
+                size="xs"
                 activeBg="bg-blue-200"
                 activeText="text-black"
                 passiveBg="bg-white"
                 passiveText="text-black"
-                navButtonsBg="bg-blue-200"
-                navButtonsText="text-black"
                 boxBg="bg-white"
+                maxPages={3}
+                /> */}
+            <PageHopper_Lite
+                totalPages={ totalPages ? totalPages : 5 }
+                onPageChange={handlePage}
+                size="xs"
+                activeBg="bg-orange-600"
+                activeText="text-gray-200"
+                passiveBg="bg-black"
+                passiveText="text-gray-400"
+                boxBg="bg-black"
+                maxPages={4}
+                firstAndLast ={true}
                 />
           </div>
 
