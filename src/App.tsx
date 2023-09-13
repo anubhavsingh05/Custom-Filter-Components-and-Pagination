@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { searchType, syncFetchProducts } from "./queryHook"
 import PageHopper from "./PageHopper"
 import PageHopper_Lite from "./PageHopper-Lite"
+import PageHopper_Lite_2 from "./PageHopper-Lite-2"
 
 
 
@@ -9,13 +10,8 @@ import PageHopper_Lite from "./PageHopper-Lite"
 // anything other than pageNo itself, changes
 
 
-
-
 function App() {
-const count = useRef(1)
-console.log(count.current++)
 
-  // const [totalPages, setTotalPages] = useState<null | number>(5)
   const [searchObject, setSearchObject] = useState<searchType>({
     pageNo:1,
     pageLength:2,
@@ -31,7 +27,6 @@ console.log(count.current++)
 
   function handlePage(page:number) {
       setSearchObject({...searchObject, pageNo:page})
-      // console.log(page)
   }
 
 
@@ -90,14 +85,13 @@ console.log(count.current++)
                 // totalPages={ totalPages ? totalPages/searchObject.pageLength : 5 }
                 onPageChange={handlePage}
                 size="xs"
-                activeBg="bg-orange-600"
+                activeBg="bg-blue-600"
                 activeText="text-gray-200"
                 passiveBg="bg-black"
                 passiveText="text-gray-400"
                 boxBg="bg-black"
                 maxButtons={4}
-                firstAndLast ={true}
-                />
+                firstAndLast ={true}/>
           </div>
 
 
