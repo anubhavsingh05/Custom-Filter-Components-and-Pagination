@@ -3,12 +3,6 @@ import axios from "axios";
 
 const serverUrl = `http://localhost:3000`
 
-export type searchType = {
-    pageNo:number;
-    pageLength:number;
-    price:[number,number];
-    category:string | null;
-}
 
 
 
@@ -31,3 +25,19 @@ export const syncFetchProducts = (searchObject:searchType) => {
         keepPreviousData:true
     })
 }
+
+
+
+
+
+
+
+// TypeScript Types __________________________________________
+
+export type searchType = {
+    pageNo:number;
+    pageLength:number;
+    price:[number,number];
+    category:string | null;
+}
+

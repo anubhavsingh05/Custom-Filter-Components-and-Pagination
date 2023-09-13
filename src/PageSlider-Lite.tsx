@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import useSideEffect from "./useSideEffect"
 
-
-// ____        ____
-// _________
-// _____________
 
 
 type PaginationProps = {
@@ -17,18 +12,16 @@ type PaginationProps = {
     passiveText:string;
     boxBg:string;
     maxButtons:number;
-    firstAndLast:boolean;
+    firstAndLast?:boolean;
   }
 
 
-function PageHopper_Lite(props:PaginationProps) {
+function PageSlider_Lite(props:PaginationProps) {
 
-    const count = useRef(1)
-    console.log(count.current++)
-    
+
     const { totalPages, onPageChange, size, boxBg,
             activeBg, activeText, passiveBg, passiveText,
-            maxButtons, firstAndLast } = props
+            maxButtons, firstAndLast = false } = props
 
     const btnSizes = {
         xs : "w-7 h-7 text-xs rounded-sm",
@@ -53,66 +46,47 @@ function PageHopper_Lite(props:PaginationProps) {
 
     const [pageNum, setPageNum] = useState(1)
 
-    const noOfButtons = totalPages <= maxButtons ? Math.ceil(totalPages) : maxButtons
+    const absTotalPages = Math.ceil(totalPages)
+    const noOfButtons = absTotalPages <= maxButtons ? absTotalPages : maxButtons
     const pageButtonsList = Array.from({ length: noOfButtons }, (_, index) => 1 + index)
     const [pageButtons, setPageButtons] = useState(pageButtonsList)
     const parentRef = useRef<HTMLDivElement | null>(null)
 
 
-    useSideEffect(()=>{
+    useEffect(()=>{
         toggleActivePassivePages()
         onPageChange(pageNum)
     },[pageNum])
-    
+
 // _________________________________________ PROPS CHANGE DETECTOR
 
-// This part is only usefull if
-//  1)  The props firstButtons, lastButtons & totalPages,
-//      are dynamic (changing) and not static, 
-//  2)  During development, you are constantly testing
-//      different colors props and you want automatic
-//      update (hot update) for it. Please note that this
-//      2nd point is only usefull during development
-
+    useEffect(()=>{
+        reorderPagination(1)
+    },[ totalPages, maxButtons ])
 
     useEffect(()=>{
         refreshButtonColors()
         toggleActivePassivePages()
-    },[ activeBg, activeText, passiveBg,
-        passiveText, size, boxBg ])
+    },[ activeBg, activeText, passiveBg, passiveText, size, boxBg ])
 
-    useEffect(()=>{
-        refreshButtonNumbers()
-    },[ totalPages, maxButtons ])
-
-    useEffect(()=>{
-        toggleActivePassivePages()
-    },[pageButtons])
-
-
-
-    function refreshButtonNumbers() {
-        setPageButtons(pageButtonsList)
-        setPageNum(1)
-    }
-     
+        
     function refreshButtonColors() {
-        const children = parentRef.current?.children
-        if (children) { 
-            const childrenArray = Array.from(children)
-            childrenArray.forEach ((child,index) => {
-                if (index>1 && index<childrenArray.length-2) {
-                    const classesArray = Array.from(child.classList);
-                    classesArray.forEach(className => {
-                        if (className.startsWith("bg") || className.startsWith("text")) {
-                            if (!["text-sm", "text-lg", "text-xl"].includes(className)) {
-                                child.classList.remove(className)
-                            }
+        const children = parentRef.current?.children || []
+        const childrenArray = Array.from(children)
+
+        const leave = firstAndLast ? 1 : 0
+        childrenArray.forEach ((child,index) => {
+            if (index > leave && index < childrenArray.length-leave-1) {
+                const classesArray = Array.from(child.classList);
+                classesArray.forEach(className => {
+                    if (className.startsWith("bg") || className.startsWith("text")) {
+                        if (!["text-sm", "text-lg", "text-xl"].includes(className)) {
+                            child.classList.remove(className)
                         }
-                    })
-                }
-            })
-        }
+                    }
+                })
+            }
+        })
     }
 
 // _________________________________________ PROPS CHANGE DETECTOR
@@ -120,17 +94,17 @@ function PageHopper_Lite(props:PaginationProps) {
 
     function reorderPagination(num:number) {
 
-        if (num === pageButtons[pageButtons.length - 1] && num !== Math.ceil(totalPages)) {
+        if (num === pageButtons[pageButtons.length - 1] && num !== absTotalPages) {
             setPageButtons(pageButtons.map(number => number + 1))
         } else if (num === pageButtons[0] && num !== 1) {
             setPageButtons(pageButtons.map(number => number - 1))
         } else if (num === 1) {
             setPageButtons(pageButtonsList)
-        } else if (num === Math.ceil(totalPages)) {
-            const lastButtonsList = pageButtonsList.map(num => Math.ceil(totalPages) - noOfButtons + num)
+        } else if (num === absTotalPages) {
+            const lastButtonsList = pageButtonsList.map(num => absTotalPages - noOfButtons + num)
             setPageButtons(lastButtonsList)
         }
-        if (num >= 1 && num <= Math.ceil(totalPages) && num !== pageNum) {
+        if (num >= 1 && num <= absTotalPages && num !== pageNum) {
             setPageNum(num)
         }
     }
@@ -140,6 +114,8 @@ function PageHopper_Lite(props:PaginationProps) {
 
         if (children) { 
             const childrenArray = Array.from(children)
+            const leave = firstAndLast ? 1 : 0
+
             childrenArray.forEach((child, index) => {
                 const childNum = child.getAttribute('data-page')
                 if (childNum && +childNum === pageNum) {
@@ -151,7 +127,7 @@ function PageHopper_Lite(props:PaginationProps) {
                     if (activeText !== passiveText) {
                         child.classList.remove(`${passiveText}`)
                     }
-                } else if (firstAndLast && index>1 && index<childrenArray.length-2) {
+                } else if (index>0+leave && index<childrenArray.length-leave-1) {
                     child.classList.add(`${passiveBg}`)
                     if (activeBg !== passiveBg) {
                         child.classList.remove(`${activeBg}`)
@@ -162,14 +138,6 @@ function PageHopper_Lite(props:PaginationProps) {
                     }
                 }
                  else if (!firstAndLast && index>0 && index<childrenArray.length-1) {
-                    child.classList.add(`${passiveBg}`)
-                    if (activeBg !== passiveBg) {
-                        child.classList.remove(`${activeBg}`)
-                    }
-                    child.classList.add(`${passiveText}`)
-                    if (activeText !== passiveText) {
-                        child.classList.remove(`${activeText}`)
-                    }
                 }
             })
         }
@@ -195,7 +163,7 @@ function PageHopper_Lite(props:PaginationProps) {
                 </button>
             }
 
-            <button className={`${navBtnSizes[size]} ${pageNum !== 1 ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-30` } flex justify-center items-center`}
+            <button className={`${navBtnSizes[size]} ${pageNum !== 1 ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-50` } flex justify-center items-center`}
                     onClick={() => reorderPagination(pageNum - 1)}
                     disabled={pageNum === 1}>
                 {`< Prev`}
@@ -214,16 +182,16 @@ function PageHopper_Lite(props:PaginationProps) {
             }
 
 
-            <button className={`${navBtnSizes[size]} ${ pageNum !== Math.ceil(totalPages) ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-30` } flex justify-center items-center`}
-                onClick={() => reorderPagination(pageNum + 1)}
-                disabled={pageNum === Math.ceil(totalPages)}>
+            <button className={`${navBtnSizes[size]} ${ pageNum !== absTotalPages ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-50` } flex justify-center items-center`}
+                    onClick={() => reorderPagination(pageNum + 1)}
+                    disabled={pageNum === absTotalPages}>
                 {`Next >`}
             </button>
 
             {
                 firstAndLast &&
                 <button className={`${navBtnSizes[size]} ${activeBg} ${activeText} flex justify-center items-center`}
-                        onClick={() => reorderPagination(Math.ceil(totalPages))}>
+                        onClick={() => reorderPagination(absTotalPages)}>
                     {`End`}
                 </button>
             }
@@ -233,4 +201,4 @@ function PageHopper_Lite(props:PaginationProps) {
     )
 }
  
-export default PageHopper_Lite
+export default PageSlider_Lite
