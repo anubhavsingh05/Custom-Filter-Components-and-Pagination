@@ -12,10 +12,10 @@ import PageHopper_Lite from "./PageHopper-Lite"
 
 
 function App() {
+const count = useRef(1)
+console.log(count.current++)
 
-
-  const [totalPages, setTotalPages] = useState<null | number>(null)
-  // const [totalPages, setTotalPages] = useState<null | number>(7)
+  // const [totalPages, setTotalPages] = useState<null | number>(5)
   const [searchObject, setSearchObject] = useState<searchType>({
     pageNo:1,
     pageLength:2,
@@ -31,16 +31,9 @@ function App() {
 
   function handlePage(page:number) {
       setSearchObject({...searchObject, pageNo:page})
-      console.log(page)
+      // console.log(page)
   }
 
-  
-  useEffect(()=>{
-    if (data && data[0]) {
-      const PageCount = Math.ceil(data[0].total/searchObject.pageLength)
-      setTotalPages(PageCount)
-    }
-  },[data])
 
   
   return (
@@ -77,7 +70,6 @@ function App() {
           </div>
 
           <div className={`bg-slate-950 mx-4 py-3 rounded-lg flex justify-center`}>
-             sdf
           </div>
 
           <div className={`bg-slate-950 mt-4 mx-4 mb-4 py-3 rounded-lg flex justify-center`}>
@@ -92,8 +84,10 @@ function App() {
                 boxBg="bg-white"
                 maxPages={3}
                 /> */}
+                
             <PageHopper_Lite
-                totalPages={ totalPages ? totalPages : 5 }
+                totalPages={ data?.[0] ? data[0].total/searchObject.pageLength : 5 }
+                // totalPages={ totalPages ? totalPages/searchObject.pageLength : 5 }
                 onPageChange={handlePage}
                 size="xs"
                 activeBg="bg-orange-600"
@@ -101,7 +95,7 @@ function App() {
                 passiveBg="bg-black"
                 passiveText="text-gray-400"
                 boxBg="bg-black"
-                maxPages={4}
+                maxButtons={4}
                 firstAndLast ={true}
                 />
           </div>

@@ -2,10 +2,6 @@ import { useEffect, useRef, useState } from "react"
 import useSideEffect from "./useSideEffect"
 
 
-// ____        ____
-// _________
-// _____________
-
 
 type PaginationProps = {
     totalPages: number;
@@ -16,17 +12,17 @@ type PaginationProps = {
     passiveBg:string;
     passiveText:string;
     boxBg:string;
-    maxButtons:number;
+    maxPages:number;
     firstAndLast:boolean;
   }
 
 
-function PageHopper_Lite(props:PaginationProps) {
+function PageHopper_Lite_2(props:PaginationProps) {
 
 
     const { totalPages, onPageChange, size, boxBg,
             activeBg, activeText, passiveBg, passiveText,
-            maxButtons, firstAndLast } = props
+            maxPages, firstAndLast } = props
 
     const btnSizes = {
         xs : "w-7 h-7 text-xs rounded-sm",
@@ -51,14 +47,13 @@ function PageHopper_Lite(props:PaginationProps) {
 
     const [pageNum, setPageNum] = useState(1)
 
-    const noOfButtons = totalPages <= maxButtons ? Math.ceil(totalPages) : maxButtons
+    const noOfButtons = totalPages <= maxPages ? totalPages : maxPages
     const pageButtonsList = Array.from({ length: noOfButtons }, (_, index) => 1 + index)
     const [pageButtons, setPageButtons] = useState(pageButtonsList)
     const parentRef = useRef<HTMLDivElement | null>(null)
 
 
     useSideEffect(()=>{
-        toggleActivePassivePages()
         onPageChange(pageNum)
     },[pageNum])
     
@@ -75,18 +70,12 @@ function PageHopper_Lite(props:PaginationProps) {
 
     useEffect(()=>{
         refreshButtonColors()
-        toggleActivePassivePages()
     },[ activeBg, activeText, passiveBg,
         passiveText, size, boxBg ])
 
     useEffect(()=>{
         refreshButtonNumbers()
-    },[ totalPages, maxButtons ])
-
-    useEffect(()=>{
-        toggleActivePassivePages()
-    },[pageButtons])
-
+    },[ totalPages ])
 
 
     function refreshButtonNumbers() {
@@ -118,58 +107,18 @@ function PageHopper_Lite(props:PaginationProps) {
 
     function reorderPagination(num:number) {
 
-        if (num === pageButtons[pageButtons.length - 1] && num !== Math.ceil(totalPages)) {
+        if (num === pageButtons[pageButtons.length - 1] && num !== totalPages) {
             setPageButtons(pageButtons.map(number => number + 1))
         } else if (num === pageButtons[0] && num !== 1) {
             setPageButtons(pageButtons.map(number => number - 1))
         } else if (num === 1) {
             setPageButtons(pageButtonsList)
-        } else if (num === Math.ceil(totalPages)) {
-            const lastButtonsList = pageButtonsList.map(num => Math.ceil(totalPages) - noOfButtons + num)
+        } else if (num === totalPages) {
+            const lastButtonsList = pageButtonsList.map(num => totalPages - noOfButtons + num)
             setPageButtons(lastButtonsList)
         }
-        if (num >= 1 && num <= Math.ceil(totalPages) && num !== pageNum) {
+        if (num >= 1 && num <= totalPages && num !== pageNum) {
             setPageNum(num)
-        }
-    }
-
-    function toggleActivePassivePages() {
-        const children = parentRef.current?.children
-
-        if (children) { 
-            const childrenArray = Array.from(children)
-            childrenArray.forEach((child, index) => {
-                const childNum = child.getAttribute('data-page')
-                if (childNum && +childNum === pageNum) {
-                    child.classList.add(`${activeBg}`)
-                    if (activeBg !== passiveBg) {
-                        child.classList.remove(`${passiveBg}`)
-                    }
-                    child.classList.add(`${activeText}`)
-                    if (activeText !== passiveText) {
-                        child.classList.remove(`${passiveText}`)
-                    }
-                } else if (firstAndLast && index>1 && index<childrenArray.length-2) {
-                    child.classList.add(`${passiveBg}`)
-                    if (activeBg !== passiveBg) {
-                        child.classList.remove(`${activeBg}`)
-                    }
-                    child.classList.add(`${passiveText}`)
-                    if (activeText !== passiveText) {
-                        child.classList.remove(`${activeText}`)
-                    }
-                }
-                 else if (!firstAndLast && index>0 && index<childrenArray.length-1) {
-                    child.classList.add(`${passiveBg}`)
-                    if (activeBg !== passiveBg) {
-                        child.classList.remove(`${activeBg}`)
-                    }
-                    child.classList.add(`${passiveText}`)
-                    if (activeText !== passiveText) {
-                        child.classList.remove(`${activeText}`)
-                    }
-                }
-            })
         }
     }
 
@@ -181,6 +130,15 @@ function PageHopper_Lite(props:PaginationProps) {
             reorderPagination(+clickedPageNo)
         }
     }
+
+    const getButtonClassName = (number: number) => {
+        if (number === pageNum) {
+          return `${btnSizes[size]} ${activeBg} ${activeText}`;
+        } else {
+          return `${btnSizes[size]} ${passiveBg} ${passiveText}`;
+        }
+    };
+
      
     return (
         <div className={`${boxBg} ${boxStyle[size]} flex font-bold`}
@@ -201,27 +159,30 @@ function PageHopper_Lite(props:PaginationProps) {
 
 
             {
-                pageButtons.map((number,index) => (
-                    <button key={index}
-                            className={`${btnSizes[size]} transition-colors duration-100 flex justify-center items-center`}
+                pageButtons.map((number,index) => {
+                    
+                    const color = getButtonClassName(index)
+                    
+                    return <button key={index}
+                            className={`${btnSizes[size]} ${color} transition-colors duration-100 flex justify-center items-center`}
                             data-page={number}
                             onClick={handlePageClick}>
                     {number}
                     </button>
-                ))
+                })
             }
 
 
-            <button className={`${navBtnSizes[size]} ${ pageNum !== Math.ceil(totalPages) ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-30` } flex justify-center items-center`}
+            <button className={`${navBtnSizes[size]} ${ pageNum !== totalPages ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-30` } flex justify-center items-center`}
                 onClick={() => reorderPagination(pageNum + 1)}
-                disabled={pageNum === Math.ceil(totalPages)}>
+                disabled={pageNum === totalPages}>
                 {`Next >`}
             </button>
 
             {
                 firstAndLast &&
                 <button className={`${navBtnSizes[size]} ${activeBg} ${activeText} flex justify-center items-center`}
-                        onClick={() => reorderPagination(Math.ceil(totalPages))}>
+                        onClick={() => reorderPagination(totalPages)}>
                     {`End`}
                 </button>
             }
@@ -231,4 +192,4 @@ function PageHopper_Lite(props:PaginationProps) {
     )
 }
  
-export default PageHopper_Lite
+export default PageHopper_Lite_2
