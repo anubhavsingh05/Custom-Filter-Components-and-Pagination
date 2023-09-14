@@ -32,7 +32,7 @@ function RangeSlider(props:sliderProps) {
     }
      
     return (
-        <div className={"w-full py-8 px-4 rounded-md bg-black flex font-bold text-xl flex-col gap-y-4"}>
+        <div className={"w-full pt-4 pb-6 px-4 rounded-md bg-black flex font-bold text-xl flex-col gap-y-6"}>
 
             <div className={`py-6 bg-gray-800 rounded-md flex justify-around`}>
                 <p>₹ {Range[0]}</p>

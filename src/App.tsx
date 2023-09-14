@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { searchType, syncFetchProducts } from "./queryHook"
 import RangeSlider from "./RangeSlider"
 import PageSlider_Lite from "./PageSlider-Lite"
+import BadgePicker from "./BadgePicker"
 
 
 
@@ -15,10 +16,14 @@ function App() {
     category:null
   })
 
-  const { data } = syncFetchProducts(searchObject)
+  const { data, isFetching } = syncFetchProducts(searchObject)
 
-  const  handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setSearchObject({...searchObject,category:e.target.value, pageNo:1})
+  // const  handleCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //     setSearchObject({...searchObject,category:e.target.value, pageNo:1})
+  // }
+
+  const  handleCategory = (category:string[]) => {
+    setSearchObject({...searchObject,category:category[0], pageNo:1})
   }
 
   const  handlePage = (page:number) => {
@@ -31,9 +36,9 @@ function App() {
   
   
   return (
-      <div className={`w-screen h-screen bg-black flex justify-center items-center gap-x-4`}>
+      <div className={`w-screen h-screen bg-black flex justify-center items-center gap-x-4 ${isFetching ? "pointer-events-none" : "pointer-events-auto"}`}>
 
-        <div className={`w-80 bg-gray-800 rounded-md `}>
+        <div className={`w-80 bg-gray-800 rounded-md`}>
            <div className={`text-3xl font-bold text-gray-400 text-center py-3 border-b-2 border-b-gray-500`}>
               Products
            </div>
@@ -51,36 +56,36 @@ function App() {
 
         <div className={`w-80 px-4 py-8 flex flex-col gap-y-6 bg-gray-800 rounded-md`}>
 
-          <div className={`text-3xl font-bold text-gray-400 text-center py-3 border-b-2 border-b-gray-500`}>
-            Filters
-          </div>
+          <div className={`text-3xl font-bold text-gray-400 text-center py-3 border-b-2 border-b-gray-500`}>Filters</div>
 
-          <div className={`flex`}>
-           <select className="bg-black grow rounded-lg px-4 py-3 border-none"
-                   onChange={ e => handleCategory(e) }>
-              <option value="phone">Phone</option>
-              <option value="laptop">Laptop</option>
-              <option value="clothes">Clothes</option>
-           </select>
-          </div>
+          <BadgePicker badges={["phone","laptop","clothes"]}
+                      onSelect={handleCategory}
+                      activeBgColor="bg-gray-900"
+                      passiveBgColor="bg-black"
+                      activeTextColor="text-white"
+                      passiveTextColor="text-gray-400"
+                      containerLayout="flex flex-col overflow-hidden rounded-md"
+                      badgeLayout="py-2 flex justify-center items-center"
+                      />
             
-          <div className={`bg-black flex justify-center items-center`}>
-            <RangeSlider  defaultValue={[20,80]}
-                          max={100} min={0} step={10}
-                          onValueCommit={handlePrice} />
+          <div className={`flex justify-center items-center`}>
+            <RangeSlider  defaultValue={[200,800]}
+                          max={1000} min={0} step={10}
+                          onValueCommit={handlePrice}/>
             </div>
 
           <div className={`bg-slate-950 rounded-lg flex justify-center`}>
             <PageSlider_Lite
-                totalPages={ data ? data[0].total/searchObject.pageLength : 5 }
+                totalPages={ data?.[0] ? data[0].total/searchObject.pageLength : 1 }
                 onPageChange={handlePage}
-                size="sm"
-                activeBg="bg-gray-600"
-                activeText="text-white"
-                passiveBg="bg-gray-800"
-                passiveText="text-gray-400"
-                boxBg="bg-black"
-                maxButtons={2}
+                size="lg"
+                activeBgColor="bg-gray-600"
+                activeTextColor="text-white"
+                passiveBgColor="bg-gray-800"
+                passiveTextColor="text-gray-400"
+                boxBgColor="bg-black"
+                maxButtons={4}
+                firstAndLast
                 />
           </div>
 

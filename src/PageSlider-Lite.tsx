@@ -6,11 +6,11 @@ type PaginationProps = {
     totalPages: number;
     onPageChange: (pageNum: number) => void;
     size : "xs" | "sm" | "md" | "lg";
-    activeBg:string;
-    activeText:string;
-    passiveBg:string;
-    passiveText:string;
-    boxBg:string;
+    activeBgColor:string;
+    activeTextColor:string;
+    passiveBgColor:string;
+    passiveTextColor:string;
+    boxBgColor:string;
     maxButtons:number;
     firstAndLast?:boolean;
   }
@@ -19,8 +19,8 @@ type PaginationProps = {
 function PageSlider_Lite(props:PaginationProps) {
 
 
-    const { totalPages, onPageChange, size, boxBg,
-            activeBg, activeText, passiveBg, passiveText,
+    const { totalPages, onPageChange, size, boxBgColor,
+            activeBgColor, activeTextColor, passiveBgColor, passiveTextColor,
             maxButtons, firstAndLast = false } = props
 
     const btnSizes = {
@@ -44,18 +44,23 @@ function PageSlider_Lite(props:PaginationProps) {
         lg : "gap-x-2 px-2 py-2 rounded-md",
     }
 
+    const firstMount = useRef(true)
     const [pageNum, setPageNum] = useState(1)
-
     const absTotalPages = Math.ceil(totalPages)
     const noOfButtons = absTotalPages <= maxButtons ? absTotalPages : maxButtons
     const pageButtonsList = Array.from({ length: noOfButtons }, (_, index) => 1 + index)
     const [pageButtons, setPageButtons] = useState(pageButtonsList)
     const parentRef = useRef<HTMLDivElement | null>(null)
 
-
+    // can't use useEffect here, think why?
+    // why we used useSideEffect instead ??
     useEffect(()=>{
-        toggleActivePassivePages()
-        onPageChange(pageNum)
+        if (firstMount.current) {
+            firstMount.current = false
+        } else {
+            toggleActivePassivePages()
+            onPageChange(pageNum)
+        }
     },[pageNum])
 
 // _________________________________________ PROPS CHANGE DETECTOR
@@ -67,7 +72,8 @@ function PageSlider_Lite(props:PaginationProps) {
     useEffect(()=>{
         refreshButtonColors()
         toggleActivePassivePages()
-    },[ activeBg, activeText, passiveBg, passiveText, size, boxBg ])
+    },[ activeBgColor, activeTextColor, passiveBgColor,
+        passiveTextColor, size, boxBgColor, pageButtons ])
 
         
     function refreshButtonColors() {
@@ -93,17 +99,20 @@ function PageSlider_Lite(props:PaginationProps) {
 
 
     function reorderPagination(num:number) {
-
-        if (num === pageButtons[pageButtons.length - 1] && num !== absTotalPages) {
-            setPageButtons(pageButtons.map(number => number + 1))
+        // There was a bug, which was fixed just by reordering
+        // the if else statements, earlier the 1st if was 3rd
+        // see below comments to know more
+        if (num === 1) {
+            setPageButtons(pageButtonsList)
         } else if (num === pageButtons[0] && num !== 1) {
             setPageButtons(pageButtons.map(number => number - 1))
-        } else if (num === 1) {
-            setPageButtons(pageButtonsList)
         } else if (num === absTotalPages) {
             const lastButtonsList = pageButtonsList.map(num => absTotalPages - noOfButtons + num)
             setPageButtons(lastButtonsList)
+        } else if (num === pageButtons[pageButtons.length - 1] && num !== absTotalPages) {
+            setPageButtons(pageButtons.map(number => number + 1))
         }
+
         if (num >= 1 && num <= absTotalPages && num !== pageNum) {
             setPageNum(num)
         }
@@ -119,25 +128,16 @@ function PageSlider_Lite(props:PaginationProps) {
             childrenArray.forEach((child, index) => {
                 const childNum = child.getAttribute('data-page')
                 if (childNum && +childNum === pageNum) {
-                    child.classList.add(`${activeBg}`)
-                    if (activeBg !== passiveBg) {
-                        child.classList.remove(`${passiveBg}`)
-                    }
-                    child.classList.add(`${activeText}`)
-                    if (activeText !== passiveText) {
-                        child.classList.remove(`${passiveText}`)
-                    }
+                    child.classList.remove(`${passiveBgColor}`)
+                    child.classList.add(`${activeBgColor}`)
+                    child.classList.remove(`${passiveTextColor}`)
+                    child.classList.add(`${activeTextColor}`)
+
                 } else if (index>0+leave && index<childrenArray.length-leave-1) {
-                    child.classList.add(`${passiveBg}`)
-                    if (activeBg !== passiveBg) {
-                        child.classList.remove(`${activeBg}`)
-                    }
-                    child.classList.add(`${passiveText}`)
-                    if (activeText !== passiveText) {
-                        child.classList.remove(`${activeText}`)
-                    }
-                }
-                 else if (!firstAndLast && index>0 && index<childrenArray.length-1) {
+                    child.classList.remove(`${activeBgColor}`)
+                    child.classList.add(`${passiveBgColor}`)
+                    child.classList.remove(`${activeTextColor}`)
+                    child.classList.add(`${passiveTextColor}`)
                 }
             })
         }
@@ -151,19 +151,21 @@ function PageSlider_Lite(props:PaginationProps) {
             reorderPagination(+clickedPageNo)
         }
     }
+
+
      
     return (
-        <div className={`${boxBg} ${boxStyle[size]} flex font-bold`}
+        <div className={`${boxBgColor} ${boxStyle[size]} flex font-bold`}
              ref={parentRef}>
             
             {   firstAndLast &&
-                <button className={`${navBtnSizes[size]} ${activeBg} ${activeText} flex justify-center items-center`}
+                <button className={`${navBtnSizes[size]} ${activeBgColor} ${activeTextColor} flex justify-center items-center`}
                         onClick={() => reorderPagination(1)}>
                     {`Start`}
                 </button>
             }
 
-            <button className={`${navBtnSizes[size]} ${pageNum !== 1 ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-50` } flex justify-center items-center`}
+            <button className={`${navBtnSizes[size]} ${pageNum !== 1 ? `${activeBgColor} ${activeTextColor}`:`${passiveBgColor} ${passiveTextColor} opacity-50` } flex justify-center items-center`}
                     onClick={() => reorderPagination(pageNum - 1)}
                     disabled={pageNum === 1}>
                 {`< Prev`}
@@ -182,7 +184,7 @@ function PageSlider_Lite(props:PaginationProps) {
             }
 
 
-            <button className={`${navBtnSizes[size]} ${ pageNum !== absTotalPages ? `${activeBg} ${activeText}`:`${passiveBg} ${passiveText} opacity-50` } flex justify-center items-center`}
+            <button className={`${navBtnSizes[size]} ${ pageNum !== absTotalPages ? `${activeBgColor} ${activeTextColor}`:`${passiveBgColor} ${passiveTextColor} opacity-50` } flex justify-center items-center`}
                     onClick={() => reorderPagination(pageNum + 1)}
                     disabled={pageNum === absTotalPages}>
                 {`Next >`}
@@ -190,7 +192,7 @@ function PageSlider_Lite(props:PaginationProps) {
 
             {
                 firstAndLast &&
-                <button className={`${navBtnSizes[size]} ${activeBg} ${activeText} flex justify-center items-center`}
+                <button className={`${navBtnSizes[size]} ${activeBgColor} ${activeTextColor} flex justify-center items-center`}
                         onClick={() => reorderPagination(absTotalPages)}>
                     {`End`}
                 </button>
@@ -202,3 +204,40 @@ function PageSlider_Lite(props:PaginationProps) {
 }
  
 export default PageSlider_Lite
+
+
+
+
+
+
+
+// here suppose if total pages becomes 1, then like any other
+// situation, it would call reorder() function with reorder(1)
+// which would match with else if "3...", and the setPageButtons
+// would be set to pageButtonsList ie [1], now if the totalpages
+// changes to any other value say 3, then again reorder(1) will
+// be called but this time it would not be caught by the else
+// if "3...." unlike any other case, instead it would match the
+// first if itself, because num = 1 (because reorder(1)) and
+// pageButtons[pageButtons.length-1] = 1 because it was set to
+// 1 as we saw above
+
+// if (num === pageButtons[pageButtons.length - 1] && num !== absTotalPages) {
+//     console.log(absTotalPages)
+//     setPageButtons(pageButtons.map(number => number + 1))
+//     console.log("1.....")
+// } else if (num === pageButtons[0] && num !== 1) {
+//     setPageButtons(pageButtons.map(number => number - 1))
+//     console.log("2.....")
+// } else if (num === 1) {
+//     setPageButtons(pageButtonsList)
+//     console.log("3.....")
+// } else if (num === absTotalPages) {
+//     console.log("4.....")
+//     const lastButtonsList = pageButtonsList.map(num => absTotalPages - noOfButtons + num)
+//     setPageButtons(lastButtonsList)
+// }
+// if (num >= 1 && num <= absTotalPages && num !== pageNum) {
+//     console.log("5.....")
+//     setPageNum(num)
+// }
