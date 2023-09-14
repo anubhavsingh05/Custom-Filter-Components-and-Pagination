@@ -5,13 +5,13 @@ import { useEffect, useRef, useState } from "react";
 type BadgeProps = {
     badges              : string[];
     onSelect            : (badge:string[]) => void
-    selectMultiple?     : boolean;
     activeBgColor       : string;
     passiveBgColor      : string;
     activeTextColor     : string;
     passiveTextColor    : string;
     badgeLayout         : string;
     containerLayout     : string;
+    selectMultiple?     : boolean;
 }
 
 

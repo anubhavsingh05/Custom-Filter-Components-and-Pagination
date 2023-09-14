@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { searchType, syncFetchProducts } from "./queryHook"
 import RangeSlider from "./RangeSlider"
 import PageSlider_Lite from "./PageSlider-Lite"
@@ -78,7 +78,7 @@ function App() {
             <PageSlider_Lite
                 totalPages={ data?.[0] ? data[0].total/searchObject.pageLength : 1 }
                 onPageChange={handlePage}
-                size="lg"
+                size="xs"
                 activeBgColor="bg-gray-600"
                 activeTextColor="text-white"
                 passiveBgColor="bg-gray-800"
