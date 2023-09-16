@@ -46,16 +46,16 @@ function BadgePicker(props:BadgeProps) {
                         label.classList.remove(className)
                     }
                 }
-                
-                const currentLabel = label.getAttribute('data-badge-name')
-                if ( currentLabel && BadgesArray.includes(currentLabel)) {
-                    label?.classList.add(activeBgColor)
-                    label?.classList.add(activeTextColor)
-                } else {
-                    label.classList.add(passiveBgColor)
-                    label.classList.add(passiveTextColor)
-                }
             })
+
+            const currentLabel = label.getAttribute('data-badge-name')
+            if ( currentLabel && BadgesArray.includes(currentLabel)) {
+                label?.classList.add(activeBgColor)
+                label?.classList.add(activeTextColor)
+            } else {
+                label.classList.add(passiveBgColor)
+                label.classList.add(passiveTextColor)
+            }
         })
     }
 
