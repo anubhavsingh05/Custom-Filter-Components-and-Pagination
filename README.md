@@ -69,6 +69,8 @@ expects some styles based on Tailwind CSS
    - Supports single and multiple selections
 
 ```js
+      const {token, setToken} = useState<boolean>()
+      
       <BadgePicker badges={["phone","laptop","clothes"]}
                    onSelect={handleCategory}
                    activeBgColor="bg-gray-900"
@@ -78,12 +80,16 @@ expects some styles based on Tailwind CSS
                    containerLayout="flex flex-col overflow-hidden rounded-md"
                    badgeLayout="py-2 flex justify-center items-center"
                    selectMultiple
+                   customBadgeStrings = {["select phone", "select laptop", "select clothes"]}
+                   resetBadgeToken = {token}
                  />
 ```
 
-- `badges`            :  A string of texts you want to make badges out of
-- `onSelect`          :  What function you want to call when user selects a badge
-- `containerLayout`   :  Layout of the container (consider it as a div containing badges)
-- `badgeLayout`       :  Laout of the badges
-- `selectMultiple`    :  (Optional), Set it to true to use multi badge select feature
+- `badges`              :  A string of texts you want to make badges out of
+- `onSelect`            :  What function you want to call when user selects a badge
+- `containerLayout`     :  Layout of the container (consider it as a div containing badges)
+- `badgeLayout`         :  Laout of the badges
+- `selectMultiple`      :  (Optional), Set it to true to use multi badge select feature
+- `customBadgeStrings`  :  (Optional), This would be shown to the user as badges while the value of each badge would be taken from `badges` (if not provided, the `badges` would be shown by default )  
+- `resetBadgeToken?`    :  (Optional), A boolean value which would reset badges if toggeled
 - All the other properties are similar to properties of RangeSlider component
