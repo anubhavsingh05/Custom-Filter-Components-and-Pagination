@@ -37,7 +37,7 @@ expects some styles based on Tailwind CSS
 - `passiveTextColor` :  Color applied to passive page button's text
 - `boxBgColor`       :  Color applied to container of the component
 - `maxButtons`       :  No. of maximum buttons you want to show
-- `firstAndLast`     :  (Optional) set it to true to show start &  end buttons
+- `firstAndLast`     :  (Optional) set it to true to show start & end buttons
 
 
 
@@ -88,7 +88,7 @@ expects some styles based on Tailwind CSS
 - `badges`              :  A string of texts you want to make badges out of
 - `onSelect`            :  What function you want to call when user selects a badge
 - `containerLayout`     :  Layout of the container (consider it as a div containing badges)
-- `badgeLayout`         :  Laout of the badges
+- `badgeLayout`         :  Layout of the badges
 - `selectMultiple`      :  (Optional), Set it to true to use multi badge select feature
 - `customBadgeStrings`  :  (Optional), This would be shown to the user as badges while the value of each badge would be taken from `badges` (if not provided, the `badges` would be shown by default )  
 - `resetBadgeToken?`    :  (Optional), A boolean value which would reset badges if toggeled
