@@ -93,3 +93,24 @@ expects some styles based on Tailwind CSS
 - `customBadgeStrings`  :  (Optional), This would be shown to the user as badges while the value of each badge would be taken from `badges` (if not provided, the `badges` would be shown by default )  
 - `resetBadgeToken?`    :  (Optional), A boolean value which would reset badges if toggeled
 - All the other properties are similar to properties of RangeSlider component
+
+### Getting Started
+
+Clone the Repo
+
+```bash
+git clone https://github.com/anubhavsinghofficials/FilterBox.git
+```
+
+Install Packages
+
+```bash
+npm install
+```
+Run the development server:
+
+```bash
+npm run dev
+```
+
+The server will run on [http://localhost:3000](http://localhost:3000)
